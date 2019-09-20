@@ -39,9 +39,6 @@ while T>0:
     matrixlist=[int(x) for x in input().split()]
     print(finacal(matrixlist,N))
     T=T-1
-#N=int(input().rstrip().split()[0])
-#matrixlist = []
-#matrixlist=[int(x) for x in input().split()]
-#print(finacal(matrixlist,N))
+
 
 
