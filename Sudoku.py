@@ -20,6 +20,7 @@ Output:
 1
 0
 
+
 def findNextCellToFill(grid, i, j):
         for x in range(i,9):
                 for y in range(j,9):
