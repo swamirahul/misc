@@ -1,0 +1,129 @@
+https://practice.geeksforgeeks.org/problems/snake-and-ladder-problem/0
+Given a snake and ladder board of order 5x6, find the minimum number of dice throws required to reach the destination or last cell (30th cell) from source (1st cell) . 
+
+Example
+
+
+
+​For the above board output will be 3 
+For 1st throw get a 2
+For 2nd throw get a 6
+For 3rd throw get a 2
+
+Input:
+The first line of input contains an integer T denoting the no of test cases. Then T test cases follow. Each test case contains two lines. The first line of input contains an integer N denoting the no of ladders and snakes present. Then in the next line are 2*N space separated values a,b which denotes a ladder or a snake at position 'a' which takes to a position 'b'.
+
+Output:
+For each test case in a new line print the required answer denoting the min no of dice throws.
+
+Constraints:
+1 <= T <= 100
+1 <= N <= 10
+1 <= a <= 30
+1 <= b <= 30
+
+Example:
+Input:
+2
+6
+11 26 3 22 5 8 20 29 27 1 21 9
+1
+2 30
+
+Output:
+3
+1
+
+Explanation:
+Testcase 1:
+For 1st throw get a 2, which contains ladder to reach 22
+For 2nd throw get a 6, which will lead to 28
+Finally get a 2, to reach at the end 30. Thus 3 dice throws required to reach 30.
+
+
+
+
+from collections import defaultdict
+
+class Graph():
+    def __init__(self):
+        """
+        self.edges is a dict of all possible next nodes
+        e.g. {'X': ['A', 'B', 'C', 'E'], ...}
+        self.weights has all the weights between two nodes,
+        with the two nodes as a tuple as the key
+        e.g. {('X', 'A'): 7, ('X', 'B'): 2, ...}
+        """
+        self.edges = defaultdict(list)
+        self.weights = {}
+    
+    def addEdge(self, from_node, to_node, weight):
+        # Note: assumes edges are bi-directional
+        self.edges[from_node].append(to_node)
+        #self.edges[from_node].append(to_node)
+        #self.edges[to_node].append(from_node)
+        self.weights[(from_node, to_node)] = weight
+        #self.weights[(to_node, from_node)] = weight
+def dijsktra(graph, initial, end):
+    # shortest paths is a dict of nodes
+    # whose value is a tuple of (previous node, weight)
+    shortest_paths = {initial: (None, 0)}
+    current_node = initial
+    visited = set()
+    
+    while current_node != end:
+        visited.add(current_node)
+        destinations = graph.edges[current_node]
+        weight_to_current_node = shortest_paths[current_node][1]
+
+        for next_node in destinations:
+            weight = graph.weights[(current_node, next_node)] + weight_to_current_node
+            if next_node not in shortest_paths:
+                shortest_paths[next_node] = (current_node, weight)
+            else:
+                current_shortest_weight = shortest_paths[next_node][1]
+                if current_shortest_weight > weight:
+                    shortest_paths[next_node] = (current_node, weight)
+        
+        next_destinations = {node: shortest_paths[node] for node in shortest_paths if node not in visited}
+        if not next_destinations:
+            return "Route Not Possible"
+        # next node is the destination with the lowest weight
+        current_node = min(next_destinations, key=lambda k: next_destinations[k][1])
+    
+    # Work back through destinations in shortest path
+    path = []
+    while current_node is not None:
+        path.append(current_node)
+        next_node = shortest_paths[current_node][0]
+        current_node = next_node
+    # Reverse path
+    path = path[::-1]
+    return path
+for i in range(int(input())):
+    N=int(input().rstrip())
+    snake_ladder=input().rstrip().split()
+    g=Graph()
+    restrictlist=[]
+    ladder=[]
+    for k in range(0,len(snake_ladder)-1,2):
+        if int(snake_ladder[k+1])-int(snake_ladder[k])<0:
+            g.addEdge(int(snake_ladder[k]),int(snake_ladder[k+1]),1)
+            restrictlist.append(int(snake_ladder[k]))
+    for i in range(1,30):
+        for j in range(1,7):
+            if i+j<=30 and i not in restrictlist:
+                g.addEdge(i,i+j,1)
+    for k in range(0,len(snake_ladder)-1,2):
+        if int(snake_ladder[k+1])-int(snake_ladder[k])>0:
+            for jh in range(1,7):
+                if int(snake_ladder[k])-jh>=1:
+                    g.addEdge(int(snake_ladder[k])-jh,int(snake_ladder[k+1]),1)
+            ladder.append(int(snake_ladder[k]))
+    
+    short_path=dijsktra(g, 1, 30)
+    #counter=0
+    #for c in short_path:
+    #    if c in ladder:
+    #        counter=counter+1
+    print(len(short_path)-1)
