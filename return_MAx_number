@@ -4,24 +4,9 @@ N=-999 return -5999
 n=76 return 675
 N=0 return 50
 
-temp=str(N)
-fin1=[]
-templist1=[]
-finallist=[]
-templist1.append(5)
-for i in range(0,len(temp)):
-    templist1.append(int(temp[i]))
-print(templist1)
-fin1.append(list(templist1))
-for k in range(0,len(templist1)-1):
-    temp=templist1[k]
-    temp1=templist1[k+1]
-    templist1[k]=temp1
-    templist1[k+1]=temp
-    fin1.append(list(templist1))
-for j in fin1:
-    tempstr=""
-    for k in range(0,len(j)):
-        tempstr=tempstr+str(j[k])
-    finallist.append(int(tempstr)) 
-max(finallist)
+templist=str(1234)
+def insertstr(source_str, insert_str, pos):
+    return source_str[:pos]+insert_str+source_str[pos:]
+maxval=0
+for i in range(0,len(templist)):
+    maxval=max(maxval,int(insertstr(templist,'5',i)))
