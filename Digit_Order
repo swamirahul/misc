@@ -1,0 +1,41 @@
+## A=[1,1,2,2,3,4,3,3,5] 
+## K is number of digits can be replaced with other digits
+## returs the maximum count of same digit in a row 
+## here out put is 2 (1,1)
+### A=[1,1,2,2,3,3,3,3,5]--> 4 (3,3,3,3), when K=1 we can replace any digit
+### A=[1,1,2,2,3,3,3,3,3]--> 5 (3,3,3,3,3), when K=2 we can replace any digit
+### still this is not optimized solution, it take lot of time
+
+
+from itertools import permutations
+def sol1(A):
+    counter=1
+    maxtemp=0
+    for i in range(0,len(A)-1):
+        if A[i]==A[i+1]:
+            counter=counter+1
+            maxtemp=max(counter,maxtemp)
+        if A[i]!=A[i+1]:  
+            counter=1
+    return maxtemp
+def replacefun(A,j,positions):
+    tempAB=list(A)
+    for m in positions:
+        tempAB[m]=j
+    return tempAB
+def solution(A, K):
+    # write your code in Python 3.6
+    maxlen=0
+    if K==0:
+        return sol1(A)
+    else:    
+        for j in list(set(A)):
+            indices = [i for i, x in enumerate(A) if x != j]  
+            perms = permutations(indices, K)
+            for perm in list(perms):
+                tempA=replacefun(tuple(A),j,perm)
+                maxlen=max(maxlen,sol1(tempA))
+        return maxlen
+    
+    
+
